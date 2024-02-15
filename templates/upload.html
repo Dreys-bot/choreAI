@@ -1,0 +1,271 @@
+<!doctype html>
+<title>Python Flask - Video Upload and Play Example</title>
+<div>
+<div style="
+  width: 100%;
+  height: 80px;
+  background-color: rgb(174, 224, 235);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  overflow: hidden;
+">
+
+  <img src="../static/assets/logo-removebg-preview.png" style="width: 200px; height:100px" />
+
+
+  <div style="margin-right: 20px;">
+    <h2><a href="/contact" style="color: black; text-decoration: none;">Contact us</a></h2> 
+  </div>
+
+</div>
+
+<div style="
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 0px;
+  height: 290px;
+  display: flex;
+  align-items: center;
+  border-bottom: hidden;
+  overflow: hidden;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+  border-bottom-left-radius: 10px; 
+  border-bottom-right-radius: 10px;
+  background: linear-gradient(45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);  
+">
+
+	<!-- <img 
+	class="wave-img"
+	src="../static/assets/wave.svg" 
+	style="position: absolute;
+	top: 50%;
+	left: 0.6%;
+	width: 150%;
+	height: 35%;
+	transform: scale(-1);
+	z-index: -1;"
+
+	> -->
+  <div style="
+    width: 40%;
+	padding-left: 70px;
+  ">
+
+    <p style="
+      color: white;
+      font-size: 3.7em;
+	  font-weight: bold;
+    ">
+      Give us your video, we will tell you his style 😊!!
+    </p>
+
+  </div>
+
+  <div style="
+    width: 50%;
+    text-align: right;
+  ">
+
+    <img 
+      src="../static/assets/dancer1-removebg-preview.png" 
+      style="
+        width: 50%;
+        position: absolute;
+		top: 5%;
+		right: -7%;
+      " 
+      alt="dancer">
+
+  </div>
+
+</div>
+
+
+<!-----------------Upload video------------------->
+
+	<p>
+		{% with messages = get_flashed_messages() %}
+		{% if messages %}
+			<ul>
+			{% for message in messages %}
+			<li>{{ message }}</li>
+			<h1>{{ message }}</h1>
+			{% endfor %}
+			</ul>
+		{% endif %}
+		{% endwith %}
+	</p>
+
+	{% if filename %}
+		<div style="height: 40%; width: 70%; ">
+			<h1>Display video</h1>
+			<video autoplay="autoplay" controls="controls" preload="preload" style="width: 100%; height: 400px; max-width: 500px;">
+				<source src="{{ url_for('display_video', filename=filename) }}" type="video/mp4"></source>
+			</video>
+
+			<p style="position: absolute; top: 100%; left: 45%">➡️➡️➡️➡️</p>
+			<p style="position: absolute; top: 105%; left: 45%">➡️➡️➡️➡️</p>
+			<p style="position: absolute; top: 110%; left: 45%">➡️➡️➡️➡️</p>
+		</div>
+
+		<h1 style="position: absolute; top:63%; left: 55%; ">Display frame</h1>
+		<div id="imgs" style="margin: 5px auto; height: 50%; width: 70%; position: absolute; top: 75%; left:55%;">
+			<img src="{{url_for("video_feed")}}" style="max-width: 100%; height: auto; max-height: 200px;" />
+			<!-- <img src="./static/images/6.png" style="max-width: 100%; height: auto; max-height: 200px;" />
+			<img src="./static/images/21.png" style="max-width: 100%; height: auto; max-height: 200px;" /> -->
+		</div>
+		
+		<h1 style="position: absolute; top: 130%; left: 55%;">Display Poses</h1>
+		<div id="poses" style="margin: 5px auto; height: 50%; width: 70%; position: absolute; top: 140%; left:55%;">
+			<img src="{{url_for("posedetect")}}" style="max-width: 100%; height: auto; max-height: 200px;" />
+			<!-- <img src="./static/poses/vis/6.png" style="max-width: 100%; height: auto; max-height: 200px;" />
+			<img src="./static/poses/vis/21.png" style="max-width: 100%; height: auto; max-height: 200px;" /> -->
+		</div>
+			
+
+		<div id="prediction" style=" padding: 20px; width: 120px; border: 4px solid #cd3434; border-radius: 5px; margin: 100px 20px ; color: black; font-weight: 200;">
+				
+		</div>
+		
+
+	{% endif %}
+	<div style="background-color: rgb(226, 224, 230);">
+	<form method="post" action="/" enctype="multipart/form-data" style="background-color: rgb(226, 224, 230); padding: 10px 20px 20px 20px; border-radius: 20px; background: linear-gradient(45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab); width: 300px; height: 60px; position: absolute; left:  35%; top: auto; margin-top: 100px;">
+		<dl>
+			<p>
+				<input type="file" name="file" autocomplete="off" required>
+			</p>
+		</dl>
+		<p>
+			<input type="submit" value="Upload">
+		</p>
+	</form>
+</div>
+</div>
+<!--------------------Show result------------------------>
+
+
+
+
+<script>
+
+	function checkForImages() {
+
+	// Images statiques
+	const staticImages = `
+	<img src="./static/images/6.png" 
+    style="height: 250px; width: 300px;";
+  ">
+	<img src="./static/images/21.png" style="height: 250px; width: 300px;">
+	`;
+
+	
+	fetch('/check-images')
+	.then(res => res.json())  
+	.then(data => {
+
+	const imagesContainer = document.getElementById('imgs');
+	
+	if(data.hasImages) {
+		
+		imagesContainer.innerHTML = staticImages;
+
+		data.images.forEach(image => {
+
+		const dynamicImage = `
+			<img src="./static/images/${image}" style="max-width: 100%; height: auto; max-height: 200px;">  
+		`;
+
+		imagesContainer.insertAdjacentHTML('beforeend', dynamicImage);
+
+		});
+
+	} else {
+		console.log("Function called")
+		
+		// imagesContainer.innerText = "Waiting...";
+		imagesContainer.innerHTML = `
+			<p>Waiting for images...</p>  
+		`;
+
+	}
+
+	});
+
+	setTimeout(checkForImages, 2000);
+}
+	
+
+
+
+	function checkForPoses(){
+
+		// Poses statiques
+		const staticPoses = `
+		<img src="./static/poses/vis/6.png" style="height: 300px; width: 250px;">
+		<img src="./static/poses/vis/6.png" style="height: 300px; width: 250px;">
+		`;
+
+		fetch('/check-poses')
+		.then(res => res.json())  
+		.then(data => {
+
+		const posesContainer = document.getElementById('poses');
+		
+		if(data.hasPoses) {
+			
+			posesContainer.innerHTML = staticPoses;
+
+			data.poses.forEach(pose => {
+
+			const dynamicPose = `
+				<img src="./static/poses/vis/${image}" style="max-width: 100%; height: auto; max-height: 200px;">  
+			`;
+
+			posesContainer.insertAdjacentHTML('beforeend', dynamicPose);
+
+			});
+
+		} else {
+			console.log("Function called")
+			
+			// imagesContainer.innerText = "Waiting...";
+			posesContainer.innerHTML = `
+				<p>Waiting for poses...</p>  
+			`;
+
+		}
+
+		});
+		setTimeout(checkForPoses, 30000);
+	}
+
+	document.addEventListener('DOMContentLoaded', checkForImages); 
+	document.addEventListener('DOMContentLoaded', checkForPoses); 
+
+
+	//////////Load result////////////////
+
+	async function getPrediction() {
+
+	// Show loading message
+	document.getElementById('prediction').innerText = 'Waiting for results...'
+
+	// Make request to Flask route
+	const response = await fetch('/predict');
+
+	// Get JSON response
+	const data = await response.json();
+
+	// Get prediction label
+	const label = data.label;
+
+	// Display prediction
+	document.getElementById('prediction').innerText = `Prediction: ${label}`;
+
+	}
+
+	document.addEventListener('DOMContentLoaded', getPrediction);
+</script>

@@ -1,0 +1,2 @@
+model_checkpoint_path: "danceClassify.ckpt-332"
+all_model_checkpoint_paths: "danceClassify.ckpt-332"
