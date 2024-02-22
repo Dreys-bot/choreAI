@@ -1,6 +1,9 @@
+<img src="https://github.com/Dreys-bot/choreAI/blob/main/static/assets/logo.png" style="width: 250px; height: 200px; margin-left: auto; margin-right: auto;" />
+
 # Dance Style Classification from 2D Poses
 This project aims to develop a dance style recognition model from sequences of estimated 2D poses on videos.
 
+![](https://github.com/Dreys-bot/choreAI/blob/main/static/assets/CHOREAI.gif)
 ## Context
 Dance is a visual art form that uses the body and its movements as a means of expression. Being able to automatically analyze dance styles and techniques from videos would open up a wide range of pedagogical and cultural applications. This project proposes a method using pose estimation. It estimates 2D pose sequences, tracks dancers using AlphaPose with 17 key body points from an online gathered dataset to create temporal motion sequences. An LSTM recurrent neural network modelled the structure and numerous configurations were tested. Due to limited resources, the model achieved an accuracy of 62% with 24% error.
 
@@ -15,12 +18,13 @@ A two-layer LSTM model was trained in a supervised manner on the pose sequences 
 
 ## Results and Future Work
 The model achieved a maximum accuracy of 85% according to the learning rate. Planned improvements include estimating 3D poses, adding features other than poses, and generating new motion sequences.
-
+![](https://github.com/Dreys-bot/choreAI/blob/main/static/assets/accuracy1.png)
+![](https://github.com/Dreys-bot/choreAI/blob/main/static/assets/confMmatrix.png)
 
 ## Installation
 - Clone repository
   ```python
-  git clone https://github.com/Dreys-bot/choreAI
+  git clone https://github.com/Dreys-bot/choreAI/tree/main
   ```
 - Install dependencies
 ```python
